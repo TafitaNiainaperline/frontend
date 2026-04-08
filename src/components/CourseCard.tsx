@@ -50,7 +50,7 @@ export default function CourseCard({
 
       <div className="p-4 flex flex-col flex-1">
         {category_name && (
-          <span className="text-xs text-primary-600 font-medium mb-1">{category_name}</span>
+          <span className="text-xs text-primary-500 font-medium mb-1">{category_name}</span>
         )}
         <h3 className="font-semibold text-gray-900 line-clamp-2 mb-1">{title}</h3>
         {instructor_name && (
