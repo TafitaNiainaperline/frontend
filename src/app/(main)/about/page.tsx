@@ -22,12 +22,12 @@ export default function AboutPage() {
       </section>
 
       {/* Values */}
-      <section className="bg-gray-50 py-16 px-4">
+      <section className="bg-green-50 py-16 px-4">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-2xl font-bold text-center mb-12">Nos valeurs</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { icon: Target, title: 'Excellence', desc: 'Des cours créés et vérifiés par des experts reconnus dans leur domaine.', color: 'bg-blue-50 text-blue-600' },
+              { icon: Target, title: 'Excellence', desc: 'Des cours créés et vérifiés par des experts reconnus dans leur domaine.', color: 'bg-primary-50 text-primary-600' },
               { icon: Users, title: 'Communauté', desc: 'Un environnement bienveillant pour apprendre ensemble et progresser.', color: 'bg-green-50 text-green-600' },
               { icon: BookOpen, title: 'Accessibilité', desc: 'Des contenus adaptés à tous les niveaux, du débutant à l\'expert.', color: 'bg-yellow-50 text-yellow-600' },
               { icon: Award, title: 'Reconnaissance', desc: 'Des certificats valorisés par les recruteurs et les entreprises.', color: 'bg-purple-50 text-purple-600' },
