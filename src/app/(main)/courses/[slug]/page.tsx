@@ -98,7 +98,7 @@ export default function CourseDetailPage() {
             {course.sections.map((section) => (
               <div key={section.id} className="border border-gray-200 rounded-lg overflow-hidden">
                 <button
-                  className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 text-left"
+                  className="w-full flex items-center justify-between px-4 py-3 bg-green-50 hover:bg-green-100 text-left"
                   onClick={() => setOpenSection(openSection === section.id ? null : section.id)}
                 >
                   <span className="font-medium text-sm">{section.title}</span>

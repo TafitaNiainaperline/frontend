@@ -36,7 +36,7 @@ export default function VerifyCertificatePage() {
           </div>
           <h1 className="text-xl font-bold mb-1">Certificat valide</h1>
           <p className="text-gray-500 mb-6">Ce certificat est authentique</p>
-          <div className="text-left space-y-3 bg-gray-50 rounded-xl p-4">
+          <div className="text-left space-y-3 bg-green-50 rounded-xl p-4">
             <div><span className="text-xs text-gray-400 block">Apprenant</span><span className="font-medium">{result.student_name}</span></div>
             <div><span className="text-xs text-gray-400 block">Cours</span><span className="font-medium">{result.course_title}</span></div>
             <div><span className="text-xs text-gray-400 block">Niveau</span><span className="font-medium capitalize">{result.level}</span></div>
