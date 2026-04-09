@@ -19,7 +19,7 @@ const categories = [
   { name: 'Marketing', count: 11 },
 ];
 
-const techs = ['JavaScript', 'React', 'Python', 'Node.js', 'TypeScript', 'Figma', 'Docker', 'SQL', 'Next.js', 'TailwindCSS', 'JavaScript', 'React', 'Python', 'Node.js', 'TypeScript', 'Figma', 'Docker', 'SQL', 'Next.js', 'TailwindCSS'];
+const techs = ['JavaScript', 'React', 'Python', 'Node.js', 'TypeScript', 'Figma', 'Docker', 'SQL', 'Next.js', 'TailwindCSS', 'HTML', 'CSS', 'PHP', 'Laravel', 'Git', 'AWS', 'MongoDB', 'Vue.js', 'Angular', 'Go'];
 
 export default function HomePage() {
   return (
@@ -116,10 +116,10 @@ export default function HomePage() {
       </section>
 
       {/* ── SCROLLING TECH BAND ── */}
-      <div className="border-y border-gray-200 bg-gray-100 py-4 overflow-hidden">
+      <div className="border-y border-gray-200 bg-white py-6 overflow-hidden">
         <div className="flex animate-scroll-x whitespace-nowrap">
-          {techs.map((t, i) => (
-              <span key={i} className="text-gray-500 text-sm font-semibold mx-8 hover:text-primary-500 transition-colors cursor-default">
+          {[...techs, ...techs, ...techs].map((t, i) => (
+              <span key={i} className="text-gray-500 text-sm font-semibold mx-10 hover:text-primary-500 transition-colors cursor-default px-4 py-2 border border-gray-200 rounded-full bg-gray-50">
               {t}
             </span>
           ))}
