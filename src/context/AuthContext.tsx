@@ -13,10 +13,9 @@ interface AuthContextType {
 }
 
 interface RegisterData {
+  name: string;
   email: string;
   password: string;
-  first_name: string;
-  last_name: string;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -41,7 +40,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const register = async (data: RegisterData) => {
-    const res = await api.post('/auth/register', data);
+    const res = await api.post('/auth/register', { name: data.name, email: data.email, password: data.password });
     setToken(res.data.token);
     setUser(res.data.user);
     router.push('/dashboard');
