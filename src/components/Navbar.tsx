@@ -8,10 +8,17 @@ export default function Navbar() {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const isActive = (href: string) => pathname === href;
+  const [activeSection, setActiveSection] = useState<string>('');
+  const isHome = pathname === '/';
+
+  const isActive = (href: string) => {
+    if (!isHome) return false;
+    if (href === '/') return activeSection === '' || activeSection === 'top';
+    return activeSection === href.replace('/#', '');
+  };
 
   return (
-    <nav className="bg-green-50/90 backdrop-blur-md border-b border-green-200 sticky top-0 z-50">
+    <nav className="bg-white/90 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between h-16">
 
@@ -22,14 +29,14 @@ export default function Navbar() {
 
           <div className="hidden md:flex items-center gap-2">
             {[
-              { href: '/', label: 'Accueil' },
-              { href: '/#courses', label: 'Cours' },
-              { href: '/#about', label: 'À propos' },
-              { href: '/#contact', label: 'Contact' },
-            ].map(({ href, label }) => (
-              <Link key={href} href={href}
+              { href: '/', label: 'Accueil', section: '' },
+              { href: '/#courses', label: 'Cours', section: 'courses' },
+              { href: '/#about', label: 'À propos', section: 'about' },
+              { href: '/#contact', label: 'Contact', section: 'contact' },
+            ].map(({ href, label, section }) => (
+              <Link key={href} href={href} onClick={() => setActiveSection(section)}
                 className={`text-base font-semibold px-3 py-2 rounded-lg transition-all ${
-                  isActive(href) ? 'text-primary-600 bg-green-100' : 'text-gray-700 hover:text-primary-600 hover:bg-green-50'
+                  isActive(href) ? 'text-primary-600 bg-primary-50' : 'text-gray-700 hover:text-primary-600 hover:bg-gray-50'
                 }`}>
                 {label}
               </Link>
@@ -39,8 +46,8 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             {user ? (
               <>
-                <Link href="/dashboard" className="text-gray-600 hover:text-gray-900 text-sm font-medium transition-colors">
-                  {user.first_name}
+                <Link href="/dashboard" className="text-gray-700 hover:text-gray-900 text-sm font-medium transition-colors">
+                  {user.name || user.email || user.first_name || 'Mon compte'}
                 </Link>
                 <button onClick={logout} className="border border-gray-300 text-gray-700 text-sm font-medium px-5 py-2 rounded-full hover:bg-gray-100 transition-all">
                   Déconnexion
@@ -48,7 +55,7 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <Link href="/login" className="text-gray-600 hover:text-gray-900 text-sm font-medium transition-colors px-4 py-2">
+                <Link href="/login" className="text-gray-700 hover:text-gray-900 text-sm font-medium transition-colors px-4 py-2">
                   Connexion
                 </Link>
                 <Link href="/register" className="bg-primary-600 text-white text-sm font-bold px-5 py-2.5 rounded-full hover:bg-primary-500 transition-all">
@@ -67,27 +74,27 @@ export default function Navbar() {
       </div>
 
       {open && (
-        <div className="md:hidden bg-green-50 border-t border-green-200 px-6 py-4 space-y-3">
+        <div className="md:hidden bg-white border-t border-gray-200 px-6 py-4 space-y-3">
           {[
-            { href: '/', label: 'Accueil' },
-            { href: '/#courses', label: 'Cours' },
-            { href: '/#about', label: 'À propos' },
-            { href: '/#contact', label: 'Contact' },
-          ].map(({ href, label }) => (
-            <Link key={href} href={href} className="block text-gray-600 hover:text-gray-900 text-sm py-1.5 font-medium" onClick={() => setOpen(false)}>
+            { href: '/', label: 'Accueil', section: '' },
+            { href: '/#courses', label: 'Cours', section: 'courses' },
+            { href: '/#about', label: 'À propos', section: 'about' },
+            { href: '/#contact', label: 'Contact', section: 'contact' },
+          ].map(({ href, label, section }) => (
+            <Link key={href} href={href} onClick={() => { setActiveSection(section); setOpen(false); }} className={`block text-base py-2 font-medium ${isActive(href) ? 'text-primary-600 font-bold' : 'text-gray-700'}`}>
               {label}
             </Link>
           ))}
           <div className="border-t border-gray-200 pt-3 space-y-2">
             {user ? (
               <>
-                <Link href="/dashboard" className="block text-gray-600 text-sm py-1.5" onClick={() => setOpen(false)}>Tableau de bord</Link>
-                <button onClick={() => { logout(); setOpen(false); }} className="block text-red-500 text-sm py-1.5">Déconnexion</button>
+                <Link href="/dashboard" className="block text-gray-700 text-base py-2 font-medium" onClick={() => setOpen(false)}>Tableau de bord</Link>
+                <button onClick={() => { logout(); setOpen(false); }} className="block text-red-500 text-base py-2 font-medium">Déconnexion</button>
               </>
             ) : (
               <>
-                <Link href="/login" className="block text-gray-600 text-sm py-1.5 font-medium" onClick={() => setOpen(false)}>Connexion</Link>
-                <Link href="/register" className="block text-primary-500 text-sm py-1.5 font-bold" onClick={() => setOpen(false)}>S'inscrire</Link>
+                <Link href="/login" className="block text-gray-700 text-base py-2 font-medium" onClick={() => setOpen(false)}>Connexion</Link>
+                <Link href="/register" className="block text-primary-600 text-base py-2 font-bold" onClick={() => setOpen(false)}>S'inscrire</Link>
               </>
             )}
           </div>
