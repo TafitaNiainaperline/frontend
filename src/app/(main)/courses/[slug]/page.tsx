@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
-import { Clock, BarChart, Users, ChevronDown, ChevronUp, Play, Lock } from 'lucide-react';
+import { Clock, BarChart, Users, ChevronDown, ChevronUp, Play, Lock, HelpCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import clsx from 'clsx';
 
@@ -13,6 +13,7 @@ interface Lesson {
   duration_minutes: number;
   is_preview: boolean;
   order_index: number;
+  has_quiz?: boolean;
 }
 
 interface Section {
@@ -114,6 +115,7 @@ export default function CourseDetailPage() {
                           <Lock className="w-4 h-4 text-gray-400 flex-shrink-0" />
                         )}
                         <span className={clsx('flex-1', !lesson.is_preview && 'text-gray-500')}>{lesson.title}</span>
+                        {lesson.has_quiz && <HelpCircle className="w-4 h-4 text-purple-500 flex-shrink-0" />}
                         <span className="text-gray-400">{lesson.duration_minutes}min</span>
                       </li>
                     ))}

@@ -1,8 +1,9 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import api from '@/lib/api';
-import { CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { CheckCircle, ChevronLeft, ChevronRight, HelpCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import dynamic from 'next/dynamic';
 
@@ -16,10 +17,14 @@ interface LessonDetail {
   duration_minutes: number;
   course_id: string;
   progress?: { is_completed: boolean; watched_seconds: number };
+  quiz_id?: string;
+  next_lesson_id?: string;
+  prev_lesson_id?: string;
 }
 
 export default function LearnPage() {
   const { courseSlug, lessonId } = useParams();
+  const router = useRouter();
   const [lesson, setLesson] = useState<LessonDetail | null>(null);
   const [completed, setCompleted] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -90,7 +95,7 @@ export default function LearnPage() {
         <p className="text-gray-600 mb-6">{lesson.description}</p>
       )}
 
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3 mb-8">
         {completed ? (
           <div className="flex items-center gap-2 text-green-600 font-medium">
             <CheckCircle className="w-5 h-5" /> Leçon complétée
@@ -103,6 +108,30 @@ export default function LearnPage() {
           >
             <CheckCircle className="w-4 h-4" />
             {saving ? 'Sauvegarde...' : 'Marquer comme terminée'}
+          </button>
+        )}
+        
+        {lesson.quiz_id && (
+          <Link href={`/learn/${courseSlug}/${lessonId}/quiz`} className="btn-outline flex items-center gap-2">
+            <HelpCircle className="w-4 h-4" /> Faire le quiz
+          </Link>
+        )}
+      </div>
+
+      <div className="flex items-center justify-between border-t pt-6">
+        {lesson.prev_lesson_id ? (
+          <Link href={`/learn/${courseSlug}/${lesson.prev_lesson_id}`} className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
+            <ChevronLeft className="w-5 h-5" /> Leçon précédente
+          </Link>
+        ) : <div />}
+        
+        {lesson.next_lesson_id ? (
+          <Link href={`/learn/${courseSlug}/${lesson.next_lesson_id}`} className="flex items-center gap-2 text-primary-600 hover:text-primary-700 font-medium">
+            Leçon suivante <ChevronRight className="w-5 h-5" />
+          </Link>
+        ) : (
+          <button onClick={async () => { try { const r = await api.post(`/certificates/generate/${lesson.course_id}`); toast.success('Certificat obtenu !'); router.push('/certificates'); } catch (e: any) { toast.error(e.response?.data?.message || 'Erreur'); } }} className="btn-primary">
+            Obtenir le certificat
           </button>
         )}
       </div>
