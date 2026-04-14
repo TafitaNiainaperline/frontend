@@ -1,11 +1,11 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import api from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
-import { Clock, BarChart, Users, ChevronDown, ChevronUp, Play, Lock, HelpCircle } from 'lucide-react';
+import { Clock, BarChart, Users, CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
-import clsx from 'clsx';
 
 interface Lesson {
   id: string;
@@ -14,6 +14,7 @@ interface Lesson {
   is_preview: boolean;
   order_index: number;
   has_quiz?: boolean;
+  is_completed?: boolean;
 }
 
 interface Section {
@@ -43,29 +44,56 @@ const levelLabel: Record<string, string> = {
 
 export default function CourseDetailPage() {
   const { slug } = useParams();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
   const [enrolling, setEnrolling] = useState(false);
-  const [openSection, setOpenSection] = useState<string | null>(null);
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  const [hasCertificate, setHasCertificate] = useState(false);
 
   useEffect(() => {
-    api.get(`/courses/${slug}`)
-      .then((r) => {
-        setCourse(r.data);
-        if (r.data.sections?.length) setOpenSection(r.data.sections[0].id);
-      })
-      .finally(() => setLoading(false));
-  }, [slug]);
+    if (authLoading) return;
+    
+    const fetchData = async () => {
+      try {
+        const courseRes = await api.get(`/courses/${slug}`);
+        const courseData = courseRes.data;
+        setCourse(courseData);
+        
+if (user && user.id) {
+          const progressRes = await api.get(`/progress/courses/${courseData.id}`);
+          const enrolledData = progressRes.data;
+          if (enrolledData && enrolledData.length > 0) {
+            setIsEnrolled(true);
+          }
+          
+          const certRes = await api.get('/certificates');
+          const allCerts = certRes.data;
+          for (let i = 0; i < allCerts.length; i++) {
+            if (String(allCerts[i].course_id) === String(courseData.id)) {
+              setHasCertificate(true);
+              break;
+            }
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [slug, user, authLoading]);
 
   const handleEnroll = async () => {
-    if (!user) { router.push('/login'); return; }
+    if (!user || !course) { router.push('/login'); return; }
     setEnrolling(true);
     try {
-      await api.post(`/courses/${course!.id}/enroll`);
+      await api.post(`/courses/${course.id}/enroll`);
       toast.success('Inscription réussie !');
-      router.push('/dashboard');
+      setIsEnrolled(true);
+      router.push(`/learn/${course.slug}/${course.sections[0]?.lessons?.[0]?.id}`);
     } catch (e: any) {
       toast.error(e.response?.data?.message || 'Erreur lors de l\'inscription');
     } finally {
@@ -92,58 +120,36 @@ export default function CourseDetailPage() {
             </span>
             <span className="flex items-center gap-1"><Users className="w-4 h-4" /> Par {course.instructor_name}</span>
           </div>
-
-          {/* Curriculum */}
-          <h2 className="text-xl font-semibold mb-3">Contenu du cours</h2>
-          <div className="space-y-2">
-            {course.sections.map((section) => (
-              <div key={section.id} className="border border-gray-200 rounded-lg overflow-hidden">
-                <button
-                  className="w-full flex items-center justify-between px-4 py-3 bg-green-50 hover:bg-green-100 text-left"
-                  onClick={() => setOpenSection(openSection === section.id ? null : section.id)}
-                >
-                  <span className="font-medium text-sm">{section.title}</span>
-                  {openSection === section.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                </button>
-                {openSection === section.id && section.lessons && (
-                  <ul className="divide-y divide-gray-100">
-                    {section.lessons.map((lesson) => (
-                      <li key={lesson.id} className="flex items-center gap-3 px-4 py-2.5 text-sm">
-                        {lesson.is_preview ? (
-                          <Play className="w-4 h-4 text-primary-500 flex-shrink-0" />
-                        ) : (
-                          <Lock className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                        )}
-                        <span className={clsx('flex-1', !lesson.is_preview && 'text-gray-500')}>{lesson.title}</span>
-                        {lesson.has_quiz && <HelpCircle className="w-4 h-4 text-purple-500 flex-shrink-0" />}
-                        <span className="text-gray-400">{lesson.duration_minutes}min</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            ))}
-          </div>
         </div>
 
         {/* Sidebar */}
         <div className="lg:col-span-1">
           <div className="card p-6 sticky top-20">
-            {course.thumbnail_url ? (
-              <img src={course.thumbnail_url} alt={course.title} className="w-full rounded-lg mb-4 aspect-video object-cover" />
-            ) : (
-              <div className="w-full aspect-video bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg mb-4 flex items-center justify-center">
-                <span className="text-white text-5xl font-bold">{course.title[0]}</span>
+            <div className="w-full aspect-video bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg mb-4 flex items-center justify-center">
+              <span className="text-white text-5xl font-bold">{course.title[0]}</span>
+            </div>
+            
+{hasCertificate ? (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+                <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                <span className="text-green-700 font-medium block">Cours terminé</span>
+                <Link href="/certificates" className="block mt-2 text-sm text-primary-600 hover:underline">
+                  Voir le certificat
+                </Link>
               </div>
+            ) : isEnrolled && !hasCertificate ? (
+              <Link href={`/learn/${course.slug}/${course.sections[0]?.lessons?.[0]?.id}`} className="btn-primary w-full py-3 text-center block">
+                Lire le cours
+              </Link>
+            ) : (
+              <button
+                className="btn-primary w-full py-3 text-base"
+                onClick={handleEnroll}
+                disabled={enrolling}
+              >
+                {enrolling ? 'Inscription...' : 'Commencer le cours'}
+              </button>
             )}
-            <button
-              className="btn-primary w-full py-3 text-base"
-              onClick={handleEnroll}
-              disabled={enrolling}
-            >
-              {enrolling ? 'Inscription...' : 'S\'inscrire au cours'}
-            </button>
-            <p className="text-center text-xs text-gray-400 mt-2">Accès à vie une fois inscrit</p>
           </div>
         </div>
       </div>
