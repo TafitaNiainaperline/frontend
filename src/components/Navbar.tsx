@@ -63,12 +63,9 @@ export default function Navbar() {
               </>
             )}
             {user && (
-              <>
-                <span className="text-gray-700 text-sm font-medium">{user.name || user.email || user.first_name || 'Mon compte'}</span>
-                <button onClick={logout} className="border border-gray-300 text-gray-700 text-sm font-medium px-5 py-2 rounded-full hover:bg-gray-100 transition-all">
-                  Déconnexion
-                </button>
-              </>
+              <button onClick={logout} className="border border-gray-300 text-gray-700 text-sm font-medium px-5 py-2 rounded-full hover:bg-gray-100 transition-all">
+                Déconnexion
+              </button>
             )}
           </div>
 
@@ -100,10 +97,7 @@ export default function Navbar() {
                 </>
               )}
               {user && (
-                <>
-                  <span className="block text-gray-700 text-base py-2 font-medium">{user.name || user.email || user.first_name || 'Mon compte'}</span>
-                  <button onClick={() => { logout(); setOpen(false); }} className="block text-gray-700 text-base py-2 font-medium">Déconnexion</button>
-                </>
+                <button onClick={() => { logout(); setOpen(false); }} className="block text-gray-700 text-base py-2 font-medium">Déconnexion</button>
               )}
             </div>
         </div>
