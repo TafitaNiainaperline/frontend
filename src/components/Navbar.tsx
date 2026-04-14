@@ -102,7 +102,7 @@ export default function Navbar() {
               {user && (
                 <>
                   <span className="block text-gray-700 text-base py-2 font-medium">{user.name || user.email || user.first_name || 'Mon compte'}</span>
-                  <button onClick={() => { logout(); setOpen(false); }} className="block text-red-500 text-base py-2 font-medium">Déconnexion</button>
+                  <button onClick={() => { logout(); setOpen(false); }} className="block text-gray-700 text-base py-2 font-medium">Déconnexion</button>
                 </>
               )}
             </div>
