@@ -102,7 +102,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           <div className="p-4 border-t border-gray-100">
             <button
               onClick={logout}
-              className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 transition-all duration-200"
+              className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 transition-all duration-200"
             >
               <LogOut className="w-4 h-4" />
               <span>Déconnexion</span>
