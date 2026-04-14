@@ -10,6 +10,14 @@ export default function Navbar() {
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState<string>('');
   const isHome = pathname === '/';
+  
+  const isDashboardPage = pathname?.startsWith('/dashboard') || 
+                          pathname?.startsWith('/courses') ||
+                          pathname?.startsWith('/certificates') ||
+                          pathname?.startsWith('/learn') ||
+                          pathname?.startsWith('/admin');
+
+  if (isDashboardPage) return null;
 
   const isActive = (href: string) => {
     if (!isHome) return false;
