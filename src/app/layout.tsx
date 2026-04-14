@@ -12,7 +12,11 @@ export const metadata: Metadata = {
   description: 'Apprenez à votre rythme avec des cours vidéo, quiz et certificats',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ 
+  children,
+}: { 
+  children: React.ReactNode 
+}) {
   return (
     <html lang="fr">
       <body className={inter.className}>
