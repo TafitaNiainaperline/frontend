@@ -15,6 +15,7 @@ interface Course {
   enrollment_count: number;
   instructor_name: string;
   category_name: string;
+  has_certificate?: boolean;
 }
 
 interface Category {
@@ -43,16 +44,17 @@ export default function CoursesPage() {
   };
 
   useEffect(() => {
-    api.get('/categories').then((r) => setCategories(r.data));
-  }, []);
-
-  useEffect(() => {
     const delay = setTimeout(fetchCourses, 300);
     return () => clearTimeout(delay);
   }, [search, level, category]);
 
+  useEffect(() => {
+    api.get('/categories').then((r) => setCategories(r.data));
+    fetchCourses();
+  }, []);
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10">
+    <div className="p-6 lg:p-10">
       <h1 className="text-3xl font-bold mb-6">Tous les cours</h1>
 
       <div className="flex flex-col md:flex-row gap-3 mb-8">
@@ -91,7 +93,7 @@ export default function CoursesPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {courses.map((course) => (
+          {courses.filter(c => !c.has_certificate).map((course) => (
             <CourseCard key={course.id} {...course} />
           ))}
         </div>
