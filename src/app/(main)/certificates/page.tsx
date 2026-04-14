@@ -32,10 +32,10 @@ export default function CertificatesPage() {
       .finally(() => setLoading(false));
   }, [user]);
 
-  if (authLoading || loading) return <div className="max-w-4xl mx-auto px-4 py-10 animate-pulse"><div className="h-40 bg-gray-100 rounded-xl" /></div>;
+  if (authLoading || loading) return <div className="p-6 lg:p-10 animate-pulse"><div className="h-40 bg-gray-100 rounded-xl" /></div>;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10">
+    <div className="p-6 lg:p-10">
       <h1 className="text-2xl font-bold mb-6 flex items-center gap-2">
         <Award className="w-7 h-7 text-yellow-500" /> Mes certificats
       </h1>
